@@ -93,7 +93,8 @@ public class CommandsTest {
 
         DatabaseCommandResult result = server.executeNextCommand(command.toString());
         assertEquals(FAILED, result.getStatus());
-        assertEquals(message, result.getErrorMessage());
+        assert(result.getErrorMessage().isPresent());
+        assertEquals(message, result.getErrorMessage().get());
     }
 
     // ================= update key tests =================
@@ -129,7 +130,8 @@ public class CommandsTest {
 
         DatabaseCommandResult result = server.executeNextCommand(command.toString());
         assertEquals(FAILED, result.getStatus());
-        assertEquals(message, result.getErrorMessage());
+        assert(result.getErrorMessage().isPresent());
+        assertEquals(message, result.getErrorMessage().get());
     }
 
     @Test
@@ -195,7 +197,8 @@ public class CommandsTest {
 
         DatabaseCommandResult result = server.executeNextCommand(command.toString());
         assertEquals(FAILED, result.getStatus());
-        assertEquals(message, result.getErrorMessage());
+        assert(result.getErrorMessage().isPresent());
+        assertEquals(message, result.getErrorMessage().get());
     }
 
     @Test
