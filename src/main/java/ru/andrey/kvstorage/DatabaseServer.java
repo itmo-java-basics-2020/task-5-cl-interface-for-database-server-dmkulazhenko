@@ -24,6 +24,10 @@ public class DatabaseServer {
         }
 
         String[] args = commandText.split(" ");
+        if (args.length < 2) {
+            return DatabaseCommandResult.error("Command parsing error");
+        }
+
         try {
             return DatabaseCommands.valueOf(args[0]).getCommand(
                     env, Arrays.copyOfRange(args, 1, args.length)

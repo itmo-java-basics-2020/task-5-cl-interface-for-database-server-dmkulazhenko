@@ -5,14 +5,12 @@ import ru.andrey.kvstorage.console.command.CreateTable;
 import ru.andrey.kvstorage.console.command.ReadKey;
 import ru.andrey.kvstorage.console.command.UpdateKey;
 
-import java.lang.reflect.Executable;
-
 public enum DatabaseCommands {
     CREATE_DATABASE {
         @Override
         public DatabaseCommand getCommand(ExecutionEnvironment env, String... args) {
-            if (args.length != 1) {
-                return () -> DatabaseCommandResult.error(createDatabaseArgsError);
+            if (args.length != CREATE_DATABASE_ARGS.length) {
+                return () -> DatabaseCommandResult.error(CREATE_DATABASE_ARGS.error);
             }
             return new CreateDatabase(args[0], env);
         }
@@ -20,8 +18,8 @@ public enum DatabaseCommands {
     CREATE_TABLE {
         @Override
         public DatabaseCommand getCommand(ExecutionEnvironment env, String... args) {
-            if (args.length != 2) {
-                return () -> DatabaseCommandResult.error(createTableArgsError);
+            if (args.length != CREATE_TABLE_ARGS.length) {
+                return () -> DatabaseCommandResult.error(CREATE_TABLE_ARGS.error);
             }
             return new CreateTable(args[0], args[1], env);
         }
@@ -29,8 +27,8 @@ public enum DatabaseCommands {
     READ_KEY {
         @Override
         public DatabaseCommand getCommand(ExecutionEnvironment env, String... args) {
-            if (args.length != 3) {
-                return () -> DatabaseCommandResult.error(readKeyArgsError);
+            if (args.length != READ_KEY_ARGS.length) {
+                return () -> DatabaseCommandResult.error(READ_KEY_ARGS.error);
             }
             return new ReadKey(args[0], args[1], args[2], env);
         }
@@ -38,17 +36,31 @@ public enum DatabaseCommands {
     UPDATE_KEY {
         @Override
         public DatabaseCommand getCommand(ExecutionEnvironment env, String... args) {
-            if (args.length != 4) {
-                return () -> DatabaseCommandResult.error(updateKeyArgsError);
+            if (args.length != UPDATE_KEY_ARGS.length) {
+                return () -> DatabaseCommandResult.error(UPDATE_KEY_ARGS.error);
             }
             return new UpdateKey(args[0], args[1], args[2], args[3], env);
         }
     };
 
-    static final String createDatabaseArgsError = "CREATE_DATABASE command has one positional argument: databaseName";
-    static final String createTableArgsError = "CREATE_TABLE command has two positional arguments: databaseName, tableName";
-    static final String readKeyArgsError = "READ_KEY command has three positional arguments: databaseName, tableName, objectKey";
-    static final String updateKeyArgsError = "UPDATE_KEY command has four positional arguments: databaseName, tableName, objectKey, objectValue";
+    private static final ArgsError CREATE_DATABASE_ARGS = new ArgsError(1,
+            "CREATE_DATABASE command has one positional argument: databaseName");
+    private static final ArgsError CREATE_TABLE_ARGS = new ArgsError(2,
+            "CREATE_TABLE command has two positional arguments: databaseName, tableName");
+    private static final ArgsError READ_KEY_ARGS = new ArgsError(3,
+            "READ_KEY command has three positional arguments: databaseName, tableName, objectKey");
+    private static final ArgsError UPDATE_KEY_ARGS = new ArgsError(4,
+            "UPDATE_KEY command has four positional arguments: databaseName, tableName, objectKey, objectValue");
 
     public abstract DatabaseCommand getCommand(ExecutionEnvironment env, String... args);
+
+    private static class ArgsError {
+        private final Integer length;
+        private final String error;
+
+        public ArgsError(Integer length, String error) {
+            this.length = length;
+            this.error = error;
+        }
+    }
 }
